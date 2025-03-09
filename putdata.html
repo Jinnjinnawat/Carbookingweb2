@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload to Firebase Storage</title>
+
+  <!-- เรียกใช้ Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"></script>
+
+</head>
+<body>
+  <h1>Upload a File to Firebase Storage</h1>
+
+  <!-- Input สำหรับเลือกไฟล์ -->
+  <input type="file" id="file-input" />
+  
+  <!-- แสดงผลสถานะการอัปโหลด -->
+  <p id="upload-status">กรุณาเลือกไฟล์เพื่ออัปโหลด</p>
+
+  <script>
+    // ตั้งค่าการเชื่อมต่อ Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZpw2LLVMR1GVQ5GqiKMl0D0h3w-w5slY",
+      authDomain: "carbookingse800.firebaseapp.com",
+      projectId: "carbookingse800",
+      storageBucket: "carbookingse800.appspot.com",
+      messagingSenderId: "95935923587",
+      appId: "1:95935923587:web:17728090134ef8ff6e62b6",
+      measurementId: "G-R203N43BFT"
+    };
+
+    // เริ่มต้น Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+    const storageRef = storage.ref();
+
+    // เลือกไฟล์จาก input
+    const fileInput = document.getElementById('file-input');
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // แสดงสถานะการเลือกไฟล์
+        document.getElementById('upload-status').textContent = `ไฟล์ที่เลือก: ${file.name}`;
+        
+        // สร้าง reference สำหรับการอัปโหลดไฟล์ไปยัง Firebase Storage
+        const fileRef = storageRef.child(`car/${file.name}`);  // สร้าง path ที่ต้องการเก็บไฟล์
+
+        // อัปโหลดไฟล์แบบ Resumable (สามารถติดตามสถานะได้)
+        const uploadTask = fileRef.put(file);
+
+        // การติดตามสถานะการอัปโหลด
+        uploadTask.on('state_changed', 
+          (snapshot) => {
+            // คำนวณเปอร์เซ็นต์การอัปโหลด
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            document.getElementById('upload-status').textContent = `กำลังอัปโหลด: ${progress.toFixed(2)}%`;
+          }, 
+          (error) => {
+            // ถ้ามีข้อผิดพลาดเกิดขึ้น
+            document.getElementById('upload-status').textContent = `เกิดข้อผิดพลาด: ${error.message}`;
+          }, 
+          () => {
+            // เมื่ออัปโหลดเสร็จสิ้น
+            document.getElementById('upload-status').textContent = 'อัปโหลดเสร็จสิ้น!';
+          }
+        );
+      }
+    });
+  </script>
+</body>
+</html>
