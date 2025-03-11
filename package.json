@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Jinnawatjinnawat.github.io/CarBookingWeb",
+  "homepage": "https://Jinnjinnawat.github.io/Carbookingweb2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
-    "firebase": "^11.3.1",
+    "firebase": "^11.4.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-csv-reader": "^4.0.0",
